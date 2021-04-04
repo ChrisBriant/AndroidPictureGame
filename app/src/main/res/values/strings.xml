@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PictureGame</string>
+    <string name="app_title">Picture Game</string>
+    <string name="enter_name_placeholder">Enter name</string>
+    <string name="send_name_btn">Send</string>
+    <string name="send_btn">Send</string>
+    <string name="preference_file_key">picture_game_shared_prefs</string>
+</resources>
