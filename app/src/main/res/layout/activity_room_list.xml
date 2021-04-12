@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.RoomListActivity">
 
     <TextView
@@ -11,6 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="40sp"
+        />
+
+
+    <TextView
+        android:id="@+id/rmAddRoomTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_new_room"
+        />
+    <EditText
+        android:id="@+id/rmNewRoomEdt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/room_name"
+        />
+
+    <Button
+        android:id="@+id/rmAddRoomBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_room_btn"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rmRoomListRecyc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         />
 
 </LinearLayout>

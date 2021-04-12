@@ -119,6 +119,11 @@ public class GameServerConnection {
                                 editor.apply();
                                 Intent intent = new Intent(ctx, RoomListActivity.class);
                                 ctx.startActivity(intent);
+                            case "room_list":
+                                //Maybe try
+                                //https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android
+                                editor.putString("room_list",reader.getString("rooms"));
+                                editor.apply();
                         }
                     } catch (Exception e) {
 

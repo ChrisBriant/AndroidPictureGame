@@ -5,4 +5,8 @@
     <string name="send_name_btn">Send</string>
     <string name="send_btn">Send</string>
     <string name="preference_file_key">picture_game_shared_prefs</string>
+    <string name="add_new_room">Add New Room</string>
+    <string name="room_name">Room name</string>
+    <string name="add_room_btn">Add Room</string>
+    <string name="placeholder">Loading</string>
 </resources>
