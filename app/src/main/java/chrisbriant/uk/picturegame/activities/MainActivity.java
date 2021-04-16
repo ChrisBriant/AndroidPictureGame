@@ -24,6 +24,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
+import chrisbriant.uk.picturegame.data.DatabaseHandler;
+import chrisbriant.uk.picturegame.services.PictureEvents;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -36,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
 
     private OkHttpClient client;
     GameServerConnection conn;
+    private DatabaseHandler db;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //getWebservice(this);
-        conn = new GameServerConnection(this);
+
+        //Create database
+        db = new DatabaseHandler(this);
+        db.purge();
+
+        conn = new GameServerConnection(this, db);
 
         EditText enterNameTxt = findViewById(R.id.enterNameTxt);
         Button sendNameBtn = findViewById(R.id.sendNameBtn);
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         Context ctx = this.getApplicationContext();
         SharedPreferences sharedPrefs = ctx.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
 
         sendNameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +76,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        SharedPreferences.OnSharedPreferenceChangeListener sharedPrefListener;
+        sharedPrefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.d("Shared pref listener", "Shared prefs changed");
+            }
+        };
+        sharedPrefs.registerOnSharedPreferenceChangeListener(sharedPrefListener);
+
+//        GameServerConnection.PictureEventListener listener = new GameServerConnection.PictureEventListener() {
+//            @Override
+//            public void onMessage(String data) {
+//                Log.d("LISTENER",data);
+//            }
+//        };
+
     }
 
 //    private void getWebservice(Context ctx) {

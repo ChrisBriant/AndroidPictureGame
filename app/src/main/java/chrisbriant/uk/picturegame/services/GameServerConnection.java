@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,7 @@ import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
+import chrisbriant.uk.picturegame.data.DatabaseHandler;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,10 +39,28 @@ public class GameServerConnection {
             = MediaType.parse("application/json; charset=utf-8");
     private static final String URL = "wss://picgameserver.chrisbriant.uk:8080/ws";
     private WebSocket sock;
+    private PictureEvents picEvents;
+    private DatabaseHandler db;
 
-    public GameServerConnection(Context ctx) {
+//    public interface PictureEventListener {
+//        public void onMessage(String data);
+//    }
+//    private GameServerConnection.PictureEventListener picListener;
+//
+//    public void setCustomObjectListener(GameServerConnection.PictureEventListener listener) {
+//        this.picListener = listener;
+//    }
+
+    public GameServerConnection(Context ctx, DatabaseHandler dbHandler) {
+        db = dbHandler;
+
         //Create share preferences
         sharedPrefs = ctx.getSharedPreferences(ctx.getString(R.string.preference_file_key),Context.MODE_PRIVATE);
+
+        //Try the custom listener
+        picEvents = new PictureEvents();
+
+
 
         SSLContext sslContext = null;
         try {
@@ -114,16 +134,21 @@ public class GameServerConnection {
                             case "register":
                                 editor.putString("id", reader.getString("yourid"));
                                 editor.apply();
+                                //picListener.onMessage("REGISTER");
                             case "set_name":
                                 editor.putString("name",reader.getString("message"));
                                 editor.apply();
                                 Intent intent = new Intent(ctx, RoomListActivity.class);
                                 ctx.startActivity(intent);
                             case "room_list":
+                                Log.d("EVENT","ROOM LIST HAPPENED");
                                 //Maybe try
                                 //https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android
+                                db.createRoom(reader.getString("rooms"));
                                 editor.putString("room_list",reader.getString("rooms"));
                                 editor.apply();
+                            case "room_failure":
+                                Toast.makeText(ctx,"Room already exists.",Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
 
@@ -155,4 +180,8 @@ public class GameServerConnection {
         Log.d("Sending", json);
         sock.send(json);
     }
+
+//    public PictureEventListener getPicListener() {
+//        return picListener;
+//    }
 }
