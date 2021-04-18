@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private OkHttpClient client;
     GameServerConnection conn;
-    private DatabaseHandler db;
+    DatabaseHandler db;
 
 
     @Override
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Create database
         db = new DatabaseHandler(this);
-        db.purge();
+        //db.purge();
 
         conn = new GameServerConnection(this, db);
 

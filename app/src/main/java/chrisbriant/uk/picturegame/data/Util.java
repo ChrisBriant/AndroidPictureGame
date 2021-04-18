@@ -13,7 +13,7 @@ public class Util {
     public static final String ROOM_OWNER_COL = "owner";
     public static final String ROOM_STATUS_COL ="status";
 
-    //Points table
+    //player table
     public static final String PLAYER_TABLE_NAME = "player_tbl";
     public static final String KEY_PLAYER_ID = "_id";
     public static final String FK_ROOM_ID = "_room_id";

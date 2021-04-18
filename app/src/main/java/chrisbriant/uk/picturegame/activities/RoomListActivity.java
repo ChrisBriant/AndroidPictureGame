@@ -66,11 +66,11 @@ public class RoomListActivity extends MainActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        rooms = new ArrayList<>();
+        rooms = db.getRooms();
 
 
         //Get items from database
-        Log.d("no items", String.valueOf(rooms.size()));
+        Log.d("noitems", String.valueOf(rooms.size()));
 
         roomRecycler = new RoomRecycler(this,rooms);
         recyclerView.setAdapter(roomRecycler);
@@ -85,9 +85,9 @@ public class RoomListActivity extends MainActivity {
                 Log.d("Shared pref listener", "Shared prefs changed from room list activity");
                 JSONObject roomList;
                 try {
-                    Log.d("JSON STRING", sharedPrefs.getString("rooms", ""));
-                    roomList = new JSONObject(sharedPrefs.getString("rooms", ""));
-                    //Log.d("HERE IS THE JSON", roomList.toString());
+                    sharedPrefs.getString("room_list", "");
+                    rooms = db.getRooms();
+                    Log.d("These are rooms", String.valueOf(rooms.size()));
                 } catch (Exception e) {
                     Log.d("Error", e.getMessage());
                 }

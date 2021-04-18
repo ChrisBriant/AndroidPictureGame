@@ -6,13 +6,15 @@ public class RoomItem {
     private int roomId;
     private String roomName;
     private String owner;
+    private boolean roomStatus;
     private int playerCount;
     private ArrayList<String> players;
 
-    public RoomItem(int roomId, String roomName, String owner, int playerCount, ArrayList<String> players) {
+    public RoomItem(int roomId, String roomName, String owner,boolean roomStatus, int playerCount, ArrayList<String> players) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.owner = owner;
+        this.roomStatus = roomStatus;
         this.playerCount = playerCount;
         this.players = players;
     }

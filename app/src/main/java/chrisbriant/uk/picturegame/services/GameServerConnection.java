@@ -144,8 +144,9 @@ public class GameServerConnection {
                                 Log.d("EVENT","ROOM LIST HAPPENED");
                                 //Maybe try
                                 //https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android
-                                db.createRoom(reader.getString("rooms"));
-                                editor.putString("room_list",reader.getString("rooms"));
+                                String roomList = reader.getString("rooms");
+                                db.createRoom(roomList);
+                                editor.putString("room_list",roomList);
                                 editor.apply();
                             case "room_failure":
                                 Toast.makeText(ctx,"Room already exists.",Toast.LENGTH_SHORT).show();
