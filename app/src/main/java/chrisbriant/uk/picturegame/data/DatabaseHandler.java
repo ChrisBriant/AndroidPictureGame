@@ -29,11 +29,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d("ON CREATE", "On Create Called");
         //Create table
-        String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY, %s VARCHAR(255), %s VARCHAR(255), %s BOOLEAN DEFAULT FALSE);",
+        String CREATE_TABLE = String.format("CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY, %s VARCHAR(255), %s VARCHAR(255), %s INTEGER, %s BOOLEAN DEFAULT FALSE);",
                 Util.ROOM_TABLE_NAME,
                 Util.KEY_ROOM_ID,
                 Util.ROOM_NAME_COL,
                 Util.ROOM_OWNER_COL,
+                Util.ROOM_PLAYER_COUNT,
                 Util.ROOM_STATUS_COL);
         Log.d("DB CREATE",CREATE_TABLE);
         db.execSQL(CREATE_TABLE);
@@ -84,6 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ContentValues roomValues = new ContentValues();
                 roomValues.put(Util.ROOM_NAME_COL, roomName);
                 roomValues.put(Util.ROOM_OWNER_COL, owner);
+                roomValues.put(Util.ROOM_PLAYER_COUNT, String.valueOf(members.length()));
                 if(status) {
                     roomValues.put(Util.ROOM_STATUS_COL,1);
                 } else {
@@ -122,8 +124,62 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         dba.close();
 
     }
-
     public ArrayList<RoomItem> getRooms() {
+        SQLiteDatabase dba = this.getReadableDatabase();
+
+        ArrayList<RoomItem> rooms = new ArrayList<RoomItem>();
+
+        Cursor cursor = dba.query(Util.ROOM_TABLE_NAME,new String[] {
+                        Util.KEY_ROOM_ID,
+                        Util.ROOM_NAME_COL,
+                        Util.ROOM_OWNER_COL,
+                        Util.ROOM_PLAYER_COUNT,
+                        Util.ROOM_STATUS_COL
+                },
+                null,null,null,null,null);
+
+
+        Log.d("ROOMS FROM DB", String.valueOf(cursor.getCount()));
+
+        //Tracking cursor
+        int currRoomId = 0;
+        if(cursor.moveToFirst()) {
+            currRoomId = cursor.getInt(1);
+            Log.d("CURRENT ROOM", String.valueOf(cursor.getCount()) );
+            Log.d("CURRENT ROOM", cursor.getColumnNames().toString() );
+            String[] cols = cursor.getColumnNames();
+            for(int i=0;i<cols.length;i++) {
+                Log.d("CURRENT ROOM", cols[i] );
+            }
+            Log.d("CURRENT ROOM", String.valueOf(cursor.getColumnCount()) );
+        }
+
+        if(cursor.moveToFirst()) {
+            ArrayList<String> players = new ArrayList<String>();
+
+            do {
+                int newRoomId = cursor.getInt(cursor.getColumnIndex(Util.KEY_ROOM_ID));
+                String roomName = cursor.getString(cursor.getColumnIndex(Util.ROOM_NAME_COL));
+                String roomOwner = cursor.getString(cursor.getColumnIndex(Util.ROOM_OWNER_COL));
+                boolean roomStatus = cursor.getInt(cursor.getColumnIndex(Util.ROOM_STATUS_COL)) > 0;
+                int playerCount = cursor.getInt(cursor.getColumnIndex(Util.ROOM_PLAYER_COUNT));
+                //Add to room list if new room
+                rooms.add(new RoomItem(
+                        newRoomId,
+                        roomName,
+                        roomOwner,
+                        roomStatus,
+                        playerCount
+                ));
+            } while(cursor.moveToNext());
+
+        }
+        //dba.close();
+        return rooms;
+    }
+
+
+    public ArrayList<RoomItem> getRoomsWithPlayers() {
         SQLiteDatabase dba = this.getReadableDatabase();
 
         ArrayList<RoomItem> rooms = new ArrayList<RoomItem>();

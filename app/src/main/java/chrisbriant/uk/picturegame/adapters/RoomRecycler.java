@@ -40,10 +40,11 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
         holder.rmItmName.setText(room.getRoomName());
         holder.rmOwner.setText(room.getOwner());
         holder.rmNoPlayers.setText(String.valueOf(room.getPlayerCount()));
+        Log.d("ROOM STATUS IN HOLDER", String.valueOf(room.isRoomStatus()));
         if(room.isRoomStatus()) {
-            holder.rmStatus.setText("Open");
-        } else {
             holder.rmStatus.setText("Locked");
+        } else {
+            holder.rmStatus.setText("Open");
         }
 
         Log.d("BINDING",room.getRoomName());
@@ -62,7 +63,6 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
         private TextView rmItmName;
         private TextView rmOwner;
         private TextView rmNoPlayers;
-        private TextView rmPlayers;
         private TextView rmStatus;
 
         public ViewHolder(@NonNull View itemView, Context ctx) {
@@ -71,7 +71,6 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
             rmItmName = itemView.findViewById(R.id.rmItmName2);
             rmOwner = itemView.findViewById(R.id.rmOwner2);
             rmNoPlayers = itemView.findViewById(R.id.rmNoPlayers2);
-            rmPlayers = itemView.findViewById(R.id.rmPlayers2);
             rmStatus = itemView.findViewById(R.id.rmStatus2);
         }
 

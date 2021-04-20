@@ -19,6 +19,13 @@ public class RoomItem {
         this.players = players;
     }
 
+    public RoomItem(int roomId, String roomName, String owner, boolean roomStatus, int playerCount) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.owner = owner;
+        this.roomStatus = roomStatus;
+        this.playerCount = playerCount;
+    }
 
     public int getRoomId() {
         return roomId;

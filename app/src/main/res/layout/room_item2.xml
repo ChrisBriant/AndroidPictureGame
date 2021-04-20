@@ -32,13 +32,6 @@
 
 
     <TextView
-        android:id="@+id/rmPlayers2"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:text="loading"
-     />
-
-    <TextView
         android:id="@+id/rmStatus2"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
