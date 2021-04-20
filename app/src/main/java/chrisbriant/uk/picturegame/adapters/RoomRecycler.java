@@ -1,6 +1,7 @@
 package chrisbriant.uk.picturegame.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,18 +29,33 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_item2,parent,false);
         return new RoomRecycler.ViewHolder(view,context);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RoomItem room = roomList.get(position);
+
+        holder.rmItmName.setText(room.getRoomName());
+        holder.rmOwner.setText(room.getOwner());
+        holder.rmNoPlayers.setText(String.valueOf(room.getPlayerCount()));
+        if(room.isRoomStatus()) {
+            holder.rmStatus.setText("Open");
+        } else {
+            holder.rmStatus.setText("Locked");
+        }
+
+        Log.d("BINDING",room.getRoomName());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return roomList.size();
+    }
+
+    public void setRoomList(List<RoomItem> roomList) {
+        this.roomList = roomList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -52,11 +68,11 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
         public ViewHolder(@NonNull View itemView, Context ctx) {
             super(itemView);
 
-            rmItmName = itemView.findViewById(R.id.rmItmName);
-            rmOwner = itemView.findViewById(R.id.rmOwner);
-            rmNoPlayers = itemView.findViewById(R.id.rmNoPlayers);
-            rmPlayers = itemView.findViewById(R.id.rmPlayers);
-            rmStatus = itemView.findViewById(R.id.rmStatus);
+            rmItmName = itemView.findViewById(R.id.rmItmName2);
+            rmOwner = itemView.findViewById(R.id.rmOwner2);
+            rmNoPlayers = itemView.findViewById(R.id.rmNoPlayers2);
+            rmPlayers = itemView.findViewById(R.id.rmPlayers2);
+            rmStatus = itemView.findViewById(R.id.rmStatus2);
         }
 
         @Override

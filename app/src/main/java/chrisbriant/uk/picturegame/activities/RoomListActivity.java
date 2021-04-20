@@ -88,6 +88,8 @@ public class RoomListActivity extends MainActivity {
                     sharedPrefs.getString("room_list", "");
                     rooms = db.getRooms();
                     Log.d("These are rooms", String.valueOf(rooms.size()));
+                    roomRecycler.setRoomList(rooms);
+                    roomRecycler.notifyDataSetChanged();
                 } catch (Exception e) {
                     Log.d("Error", e.getMessage());
                 }

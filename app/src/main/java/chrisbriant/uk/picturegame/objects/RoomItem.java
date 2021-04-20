@@ -59,4 +59,12 @@ public class RoomItem {
     public void setPlayers(ArrayList<String> players) {
         this.players = players;
     }
+
+    public boolean isRoomStatus() {
+        return roomStatus;
+    }
+
+    public void setRoomStatus(boolean roomStatus) {
+        this.roomStatus = roomStatus;
+    }
 }

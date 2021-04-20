@@ -129,8 +129,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ArrayList<RoomItem> rooms = new ArrayList<RoomItem>();
 
         String Q_ROOMS_WITH_PLAYERS =
-                String.format("SELECT r.%s,r.%s,r.%s,r.%s,pl.%s,pl.%s FROM %s AS r" +
-                                " INNER JOIN %s AS pl ON r.%s = pl.%s;",
+                String.format("SELECT r.%s,r.%s,r.%s,r.%s,pl.%s as player_id,pl.%s FROM %s AS r" +
+                                " LEFT JOIN %s AS pl ON r.%s = pl.%s;",
                         Util.KEY_ROOM_ID,
                         Util.ROOM_NAME_COL,
                         Util.ROOM_OWNER_COL,
@@ -151,7 +151,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //Tracking cursor
         int currRoomId = 0;
         if(cursor.moveToFirst()) {
-            currRoomId = cursor.getInt(cursor.getColumnIndex(Util.KEY_ROOM_ID));
+            currRoomId = cursor.getInt(1);
+            Log.d("CURRENT ROOM", String.valueOf(cursor.getCount()) );
+            Log.d("CURRENT ROOM", cursor.getColumnNames().toString() );
+            String[] cols = cursor.getColumnNames();
+            for(int i=0;i<cols.length;i++) {
+                Log.d("CURRENT ROOM", cols[i] );
+            }
+            Log.d("CURRENT ROOM", String.valueOf(cursor.getColumnCount()) );
         }
 
         if(cursor.moveToFirst()) {
@@ -160,11 +167,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
            do {
                int newRoomId = cursor.getInt(cursor.getColumnIndex(Util.KEY_ROOM_ID));
                String roomName = cursor.getString(cursor.getColumnIndex(Util.ROOM_NAME_COL));
-               String roomOwner = cursor.getString(cursor.getColumnIndex(Util.ROOM_NAME_COL));
+               String roomOwner = cursor.getString(cursor.getColumnIndex(Util.ROOM_OWNER_COL));
                boolean roomStatus = cursor.getInt(cursor.getColumnIndex(Util.ROOM_STATUS_COL)) > 0;
                //Add to room list if new room
+               Log.d("ADDING ROOM",String.valueOf(currRoomId) + " ," + String.valueOf(newRoomId));
                if(currRoomId != newRoomId) {
                    //Add room object
+
                    rooms.add(new RoomItem(
                            newRoomId,
                            roomName,
@@ -177,7 +186,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                    currRoomId = newRoomId;
                    players = new ArrayList<String>();
                } else {
-                   players.add(cursor.getString(cursor.getColumnIndex(Util.PLAYER_NAME_COL)));
+                   try {
+                       players.add(cursor.getString(cursor.getColumnIndex(Util.PLAYER_NAME_COL)));
+                   } catch(Exception e) {
+                       Log.d("ERROR ADDING PLAYER", "Unable to add the player");
+                   }
                }
            } while(cursor.moveToNext());
 

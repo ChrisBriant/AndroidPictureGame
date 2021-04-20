@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Create database
         db = new DatabaseHandler(this);
-        //db.purge();
+        db.purge();
 
         conn = new GameServerConnection(this, db);
 
