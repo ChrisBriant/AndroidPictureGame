@@ -1,6 +1,8 @@
 package chrisbriant.uk.picturegame.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 import chrisbriant.uk.picturegame.R;
+import chrisbriant.uk.picturegame.activities.RoomActivity;
+import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.objects.RoomItem;
 
 public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> {
@@ -85,7 +89,13 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
                 Toast.makeText(context,"Sorry room is not available.",Toast.LENGTH_SHORT).show();
             } else {
                 //Enter room here
-                
+                SharedPreferences sharedPrefs = context.getSharedPreferences(
+                        context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString("current room",r.getRoomName());
+                editor.apply();
+                Intent intent = new Intent(context, RoomActivity.class);
+                context.startActivity(intent);
             }
         }
     }

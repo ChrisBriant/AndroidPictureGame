@@ -28,6 +28,7 @@ public class RoomListActivity extends MainActivity {
     private RoomRecycler roomRecycler;
     private ArrayList<RoomItem> rooms;
     private RoomList roomList;
+    SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class RoomListActivity extends MainActivity {
 
         //Get the shared preferences
         Context ctx = this.getApplicationContext();
-        SharedPreferences sharedPrefs = ctx.getSharedPreferences(
+        sharedPrefs = ctx.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
 
