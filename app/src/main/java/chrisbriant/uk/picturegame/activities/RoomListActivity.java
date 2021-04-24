@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.adapters.RoomRecycler;
 import chrisbriant.uk.picturegame.objects.RoomItem;
+import chrisbriant.uk.picturegame.objects.RoomList;
 import chrisbriant.uk.picturegame.services.PictureEvents;
 
 public class RoomListActivity extends MainActivity {
     private RecyclerView recyclerView;
     private RoomRecycler roomRecycler;
     private ArrayList<RoomItem> rooms;
+    private RoomList roomList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +68,9 @@ public class RoomListActivity extends MainActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        rooms = db.getRooms();
-
+        //rooms = db.getRooms();
+        roomList = new RoomList();
+        rooms = new ArrayList<RoomItem>();
 
         //Get items from database
         Log.d("noitems", String.valueOf(rooms.size()));
@@ -83,10 +86,11 @@ public class RoomListActivity extends MainActivity {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 Log.d("Shared pref listener", "Shared prefs changed from room list activity");
-                JSONObject roomList;
+                //JSONObject roomList;
                 try {
-                    sharedPrefs.getString("room_list", "");
-                    rooms = db.getRooms();
+                    String roomListStr = sharedPrefs.getString("room_list", "");
+                    rooms = roomList.loadRooms(roomListStr);
+                    //rooms = db.getRooms();
                     Log.d("These are rooms", String.valueOf(rooms.size()));
                     roomRecycler.setRoomList(rooms);
                     roomRecycler.notifyDataSetChanged();

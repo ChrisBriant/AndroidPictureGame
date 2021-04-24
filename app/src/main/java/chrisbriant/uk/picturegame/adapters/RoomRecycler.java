@@ -58,6 +58,7 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
 
     public void setRoomList(List<RoomItem> roomList) {
         this.roomList = roomList;
+        Log.d("ROOM LIST SET", "I am setting the room list");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -73,6 +74,8 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
             rmOwner = itemView.findViewById(R.id.rmOwner2);
             rmNoPlayers = itemView.findViewById(R.id.rmNoPlayers2);
             rmStatus = itemView.findViewById(R.id.rmStatus2);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override

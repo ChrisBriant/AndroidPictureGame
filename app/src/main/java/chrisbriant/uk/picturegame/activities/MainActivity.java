@@ -26,6 +26,7 @@ import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.data.DatabaseHandler;
+import chrisbriant.uk.picturegame.objects.RoomList;
 import chrisbriant.uk.picturegame.services.PictureEvents;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client;
     GameServerConnection conn;
     DatabaseHandler db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

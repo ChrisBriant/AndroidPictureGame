@@ -27,6 +27,14 @@ public class RoomItem {
         this.playerCount = playerCount;
     }
 
+
+    public RoomItem(String roomName, String owner, boolean roomStatus, int playerCount) {
+        this.roomName = roomName;
+        this.owner = owner;
+        this.roomStatus = roomStatus;
+        this.playerCount = playerCount;
+    }
+
     public int getRoomId() {
         return roomId;
     }

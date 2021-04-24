@@ -144,9 +144,9 @@ public class GameServerConnection {
                                 Log.d("EVENT","ROOM LIST HAPPENED");
                                 //Maybe try
                                 //https://stackoverflow.com/questions/7145606/how-do-you-save-store-objects-in-sharedpreferences-on-android
-                                db.purge();
+                                //db.purge();
                                 String roomList = reader.getString("rooms");
-                                db.createRoom(roomList);
+                                //db.createRoom(roomList);
                                 editor.putString("room_list",roomList);
                                 editor.apply();
                             case "room_failure":

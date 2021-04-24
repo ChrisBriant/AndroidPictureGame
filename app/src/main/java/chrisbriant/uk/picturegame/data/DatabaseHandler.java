@@ -166,8 +166,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         newRoomId,
                         roomName,
                         roomOwner,
-                        //roomStatus,
-                        true, //TEST
+                        roomStatus,
                         playerCount
                 ));
             } while(cursor.moveToNext());
