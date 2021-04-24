@@ -155,8 +155,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         if(cursor.moveToFirst()) {
-            ArrayList<String> players = new ArrayList<String>();
-
             do {
                 int newRoomId = cursor.getInt(cursor.getColumnIndex(Util.KEY_ROOM_ID));
                 String roomName = cursor.getString(cursor.getColumnIndex(Util.ROOM_NAME_COL));
@@ -168,7 +166,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         newRoomId,
                         roomName,
                         roomOwner,
-                        roomStatus,
+                        //roomStatus,
+                        true, //TEST
                         playerCount
                 ));
             } while(cursor.moveToNext());

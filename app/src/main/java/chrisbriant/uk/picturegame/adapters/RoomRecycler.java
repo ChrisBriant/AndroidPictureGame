@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,6 +77,13 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
 
         @Override
         public void onClick(View v) {
+            RoomItem r = roomList.get(getAdapterPosition());
+            if(r.isRoomStatus()) {
+                Toast.makeText(context,"Sorry room is not available.",Toast.LENGTH_SHORT).show();
+            } else {
+                //Enter room here
+                
+            }
         }
     }
 }
