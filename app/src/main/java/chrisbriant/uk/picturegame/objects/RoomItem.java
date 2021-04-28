@@ -25,10 +25,11 @@ public class RoomItem {
         this.owner = owner;
         this.roomStatus = roomStatus;
         this.playerCount = playerCount;
+        this.players = players;
     }
 
 
-    public RoomItem(String roomName, String owner, boolean roomStatus, int playerCount) {
+    public RoomItem(String roomName, String owner, boolean roomStatus, int playerCount, ArrayList<String> players) {
         this.roomName = roomName;
         this.owner = owner;
         this.roomStatus = roomStatus;
@@ -82,4 +83,6 @@ public class RoomItem {
     public void setRoomStatus(boolean roomStatus) {
         this.roomStatus = roomStatus;
     }
+
+
 }

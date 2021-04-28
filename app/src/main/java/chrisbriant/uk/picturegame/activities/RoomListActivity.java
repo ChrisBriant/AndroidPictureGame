@@ -26,8 +26,8 @@ import chrisbriant.uk.picturegame.services.PictureEvents;
 public class RoomListActivity extends MainActivity {
     private RecyclerView recyclerView;
     private RoomRecycler roomRecycler;
-    private ArrayList<RoomItem> rooms;
-    private RoomList roomList;
+    ArrayList<RoomItem> rooms;
+    RoomList roomList;
     SharedPreferences sharedPrefs;
 
     @Override
@@ -76,7 +76,7 @@ public class RoomListActivity extends MainActivity {
         //Get items from database
         Log.d("noitems", String.valueOf(rooms.size()));
 
-        roomRecycler = new RoomRecycler(this,rooms);
+        roomRecycler = new RoomRecycler(this,rooms, conn);
         recyclerView.setAdapter(roomRecycler);
         roomRecycler.notifyDataSetChanged();
 

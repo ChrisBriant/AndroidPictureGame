@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -21,14 +22,17 @@ import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.activities.RoomActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.objects.RoomItem;
+import chrisbriant.uk.picturegame.services.GameServerConnection;
 
 public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> {
     private Context context;
     private List<RoomItem> roomList;
+    private GameServerConnection conn;
 
-    public RoomRecycler(Context context, List<RoomItem> roomList) {
+    public RoomRecycler(Context context, List<RoomItem> roomList, GameServerConnection conn) {
         this.context = context;
         this.roomList = roomList;
+        this.conn = conn;
     }
 
     @NonNull
@@ -92,8 +96,18 @@ public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> 
                 SharedPreferences sharedPrefs = context.getSharedPreferences(
                         context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPrefs.edit();
-                editor.putString("current room",r.getRoomName());
+                editor.putString("current_room",r.getRoomName());
                 editor.apply();
+                JSONObject payload = new JSONObject();
+                try {
+                    payload.put("type", "enter_room");
+                    payload.put("client_id", sharedPrefs.getString("id",""));
+                    payload.put("name", r.getRoomName());
+                    conn.send(payload.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("AUTH", "Exception Fired");
+                }
                 Intent intent = new Intent(context, RoomActivity.class);
                 context.startActivity(intent);
             }

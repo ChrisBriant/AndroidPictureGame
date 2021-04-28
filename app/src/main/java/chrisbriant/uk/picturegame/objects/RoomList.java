@@ -34,9 +34,14 @@ public class RoomList extends HashMap {
             String roomName = roomJSON.getString("name");
             String owner = roomJSON.getString("owner_name");
             JSONArray members = roomJSON.getJSONArray("user_names");
+            ArrayList<String> userNames = new ArrayList<String>();
+            for(int j=0;j<members.length();j++) {
+                userNames.add(members.getString(j));
+            }
+            Log.d("MEMBERS",userNames.toString());
             boolean status = roomJSON.getBoolean("locked");
 
-            RoomItem room = new RoomItem(roomName,owner,status,members.length());
+            RoomItem room = new RoomItem(roomName,owner,status,members.length(),userNames);
 
             //Add to the hash table
             try {
@@ -55,4 +60,9 @@ public class RoomList extends HashMap {
 
         return listOfRooms;
     }
+
+//    public ArrayList<String> getRoomMembers(String room) {
+//        ArrayList<String> members = this.get(room)
+//
+//    }
 }

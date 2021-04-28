@@ -26,13 +26,14 @@ import chrisbriant.uk.picturegame.data.DatabaseHandler;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okio.ByteString;
 
-public class GameServerConnection {
+public class GameServerConn {
+    // static variable single_instance of type Singleton
+    private static GameServerConn single_instance = null;
+
     private OkHttpClient client;
     private SharedPreferences sharedPrefs;
     private static final MediaType JSON
@@ -42,16 +43,7 @@ public class GameServerConnection {
     private PictureEvents picEvents;
     private DatabaseHandler db;
 
-//    public interface PictureEventListener {
-//        public void onMessage(String data);
-//    }
-//    private GameServerConnection.PictureEventListener picListener;
-//
-//    public void setCustomObjectListener(GameServerConnection.PictureEventListener listener) {
-//        this.picListener = listener;
-//    }
-
-    public GameServerConnection(Context ctx, DatabaseHandler dbHandler) {
+    private GameServerConn(Context ctx, DatabaseHandler dbHandler) {
         db = dbHandler;
 
         //Create share preferences
@@ -180,6 +172,14 @@ public class GameServerConnection {
     public void send(String json) {
         Log.d("Sending", json);
         sock.send(json);
+    }
+
+    public static GameServerConn getInstance(Context ctx,DatabaseHandler db)
+    {
+        if (single_instance == null)
+            single_instance = new GameServerConn(ctx,db);
+
+        return single_instance;
     }
 
 //    public PictureEventListener getPicListener() {
