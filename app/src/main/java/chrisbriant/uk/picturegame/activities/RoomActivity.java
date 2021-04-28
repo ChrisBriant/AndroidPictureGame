@@ -2,6 +2,7 @@ package chrisbriant.uk.picturegame.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +19,12 @@ import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.objects.MemberList;
 import chrisbriant.uk.picturegame.objects.RoomItem;
 import chrisbriant.uk.picturegame.objects.RoomList;
+import chrisbriant.uk.picturegame.services.GameServerConn;
 
-public class RoomActivity extends RoomListActivity {
+public class RoomActivity extends AppCompatActivity {
     private TextView rmPlayerList;
     private Button rmStartGameBtn;
+    private GameServerConn conn;
     ArrayList<String> roomMembers = new ArrayList<String>();
     String currentRoom;
     MemberList memberList = new MemberList();
@@ -31,11 +34,15 @@ public class RoomActivity extends RoomListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
+        conn = GameServerConn.getInstance(this);
+
         TextView rmRoomTitle = findViewById(R.id.rmRoomTitle);
         rmPlayerList = findViewById(R.id.rmPlayerList);
         rmStartGameBtn = findViewById(R.id.rmStartGameBtn);
-
-        currentRoom = sharedPrefs.getString("current room","");
+        //SharedPreferences sharedPrefs = this.getSharedPreferences(
+          //      getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = conn.getSharedPrefs();
+        currentRoom = sharedPrefs.getString("current_room","");
         rmRoomTitle.setText(currentRoom);
         String roomListStr = sharedPrefs.getString("room_list", "");
         try {
@@ -48,8 +55,8 @@ public class RoomActivity extends RoomListActivity {
             e.printStackTrace();
         }
 
-        RoomItem currentRoomItem = (RoomItem) roomList.get(currentRoom);
-        Log.d("ROOM ITEM", roomList.keySet().toString());
+        //RoomItem currentRoomItem = (RoomItem) roomList.get(currentRoom);
+       // Log.d("ROOM ITEM", roomList.keySet().toString());
 
 //        roomMembers = currentRoomItem.getPlayers();
 //
@@ -65,7 +72,7 @@ public class RoomActivity extends RoomListActivity {
                     memberList.loadMembers(roomListStr, currentRoom);
                     //rooms = db.getRooms();
                     //RoomItem currentRoomItem = (RoomItem) roomList.get(currentRoom);
-                    Log.d("Shared pref listener", roomList.keySet().toString());
+                    //Log.d("Shared pref listener", roomList.keySet().toString());
                     if(memberList != null) {
                         Log.d("PLAYERS","Player list is not null");
                         setPlayers(memberList.getMembers());

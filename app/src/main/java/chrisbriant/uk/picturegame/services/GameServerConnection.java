@@ -182,7 +182,11 @@ public class GameServerConnection {
         sock.send(json);
     }
 
-//    public PictureEventListener getPicListener() {
+    public SharedPreferences getSharedPrefs() {
+        return sharedPrefs;
+    }
+
+    //    public PictureEventListener getPicListener() {
 //        return picListener;
 //    }
 }

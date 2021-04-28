@@ -43,8 +43,7 @@ public class GameServerConn {
     private PictureEvents picEvents;
     private DatabaseHandler db;
 
-    private GameServerConn(Context ctx, DatabaseHandler dbHandler) {
-        db = dbHandler;
+    private GameServerConn(Context ctx) {
 
         //Create share preferences
         sharedPrefs = ctx.getSharedPreferences(ctx.getString(R.string.preference_file_key),Context.MODE_PRIVATE);
@@ -174,15 +173,19 @@ public class GameServerConn {
         sock.send(json);
     }
 
-    public static GameServerConn getInstance(Context ctx,DatabaseHandler db)
+    public static GameServerConn getInstance(Context ctx)
     {
         if (single_instance == null)
-            single_instance = new GameServerConn(ctx,db);
+            single_instance = new GameServerConn(ctx);
 
         return single_instance;
     }
 
-//    public PictureEventListener getPicListener() {
+    public SharedPreferences getSharedPrefs() {
+        return sharedPrefs;
+    }
+
+    //    public PictureEventListener getPicListener() {
 //        return picListener;
 //    }
 }

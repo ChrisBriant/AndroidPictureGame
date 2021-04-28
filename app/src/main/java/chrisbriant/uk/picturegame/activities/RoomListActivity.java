@@ -21,14 +21,15 @@ import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.adapters.RoomRecycler;
 import chrisbriant.uk.picturegame.objects.RoomItem;
 import chrisbriant.uk.picturegame.objects.RoomList;
+import chrisbriant.uk.picturegame.services.GameServerConn;
 import chrisbriant.uk.picturegame.services.PictureEvents;
 
-public class RoomListActivity extends MainActivity {
+public class RoomListActivity extends AppCompatActivity  {
     private RecyclerView recyclerView;
     private RoomRecycler roomRecycler;
-    ArrayList<RoomItem> rooms;
-    RoomList roomList;
-    SharedPreferences sharedPrefs;
+    private ArrayList<RoomItem> rooms;
+    private RoomList roomList;
+    private GameServerConn conn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,12 @@ public class RoomListActivity extends MainActivity {
 
         //Get the shared preferences
         Context ctx = this.getApplicationContext();
-        sharedPrefs = ctx.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        //SharedPreferences sharedPrefs = ctx.getSharedPreferences(
+          //      getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
+
+        conn = GameServerConn.getInstance(this);
+        SharedPreferences sharedPrefs = conn.getSharedPrefs();
 
         TextView rmLstNameTxt = findViewById(R.id.rmLstNameTxt);
         rmLstNameTxt.setText("Welcome " + sharedPrefs.getString("name",""));

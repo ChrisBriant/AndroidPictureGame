@@ -22,14 +22,15 @@ import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.activities.RoomActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.objects.RoomItem;
+import chrisbriant.uk.picturegame.services.GameServerConn;
 import chrisbriant.uk.picturegame.services.GameServerConnection;
 
 public class RoomRecycler extends RecyclerView.Adapter<RoomRecycler.ViewHolder> {
     private Context context;
     private List<RoomItem> roomList;
-    private GameServerConnection conn;
+    private GameServerConn conn;
 
-    public RoomRecycler(Context context, List<RoomItem> roomList, GameServerConnection conn) {
+    public RoomRecycler(Context context, List<RoomItem> roomList, GameServerConn conn) {
         this.context = context;
         this.roomList = roomList;
         this.conn = conn;
