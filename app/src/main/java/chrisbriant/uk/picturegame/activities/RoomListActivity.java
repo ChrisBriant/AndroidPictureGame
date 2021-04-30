@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -73,9 +74,17 @@ public class RoomListActivity extends AppCompatActivity  {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //rooms = db.getRooms();
+
         roomList = new RoomList();
         rooms = new ArrayList<RoomItem>();
+
+        String roomListStr = sharedPrefs.getString("room_list", "");
+        try {
+            rooms = roomList.loadRooms(roomListStr);
+            Log.d("These are rooms", String.valueOf(rooms.size()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         //Get items from database
         Log.d("noitems", String.valueOf(rooms.size()));

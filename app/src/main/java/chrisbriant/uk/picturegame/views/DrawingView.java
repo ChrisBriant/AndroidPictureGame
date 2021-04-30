@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -67,5 +69,34 @@ public class DrawingView extends View {
         }
 
         return true;
+    }
+
+
+    public void drawPoints(String picData) {
+        //ArrayList<PicPoint> points = new ArrayList<PicPoint>();
+        try {
+            JSONArray picArray = new JSONArray(picData);
+            for(int i=0;i<picArray.length();i++) {
+                JSONObject pointJson = picArray.getJSONObject(i);
+                PicPoint point = new PicPoint(pointJson.getInt("x"),
+                        pointJson.getInt("y"),
+                        pointJson.getString("pos")
+                );
+                //Draw to canvas
+                switch(point.getPos()) {
+                    case "s":
+                        mPath.moveTo(point.getX(), point.getY());
+                    case "e":
+                        mPath.lineTo(point.getX(), point.getY());
+                        mPath.close();
+                    default:
+                        mPath.lineTo(point.getX(), point.getY());
+                }
+                //Todo Need to figure out how to get a canvas handle and draw
+                //canvas.drawPath(mPath, mPaint);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

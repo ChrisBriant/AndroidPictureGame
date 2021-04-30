@@ -8,12 +8,15 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -21,8 +24,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
+import chrisbriant.uk.picturegame.activities.GameActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.data.DatabaseHandler;
+import chrisbriant.uk.picturegame.objects.PicPoint;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -121,6 +126,7 @@ public class GameServerConn {
                         String type = reader.getString("type");
                         Log.d("TYPE",type);
                         SharedPreferences.Editor editor = sharedPrefs.edit();
+                        Intent intent;
                         switch(type) {
                             case "register":
                                 editor.putString("id", reader.getString("yourid"));
@@ -128,7 +134,7 @@ public class GameServerConn {
                             case "set_name":
                                 editor.putString("name",reader.getString("message"));
                                 editor.apply();
-                                Intent intent = new Intent(ctx, RoomListActivity.class);
+                                intent = new Intent(ctx, RoomListActivity.class);
                                 ctx.startActivity(intent);
                             case "room_list":
                                 Log.d("EVENT","ROOM LIST HAPPENED");
@@ -141,6 +147,19 @@ public class GameServerConn {
                                 editor.apply();
                             case "room_failure":
                                 Toast.makeText(ctx,"Room already exists.",Toast.LENGTH_SHORT).show();
+                            case "game_start":
+                                Log.d("GAME START", "Game start received");
+                                editor.putString("startPlayer", reader.getString("startplayer"));
+                                editor.putString("gameId", reader.getString("game_id"));
+                                intent = new Intent(ctx, GameActivity.class);
+                                ctx.startActivity(intent);
+                                editor.apply();
+                            case "word":
+                                editor.putString("word", reader.getString("word"));
+                                editor.apply();
+                            case "picture":
+                                editor.putString("picture", reader.getString("picture"));
+                                editor.apply();
                         }
                     } catch (Exception e) {
 
@@ -155,6 +174,25 @@ public class GameServerConn {
             client.newWebSocket(request, webSocketListener);
             client.dispatcher().executorService().shutdown();
         }
+    }
+
+    private static ArrayList<PicPoint> getPoints(String picData) {
+        ArrayList<PicPoint> points = new ArrayList<PicPoint>();
+        try {
+            JSONArray picArray = new JSONArray(picData);
+            for(int i=0;i<picArray.length();i++) {
+                JSONObject pointJson = picArray.getJSONObject(i);
+                PicPoint point = new PicPoint(pointJson.getInt("x"),
+                                            pointJson.getInt("y"),
+                                            pointJson.getString("pos")
+                );
+                points.add(point);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return points;
     }
 
     private String post(String json) throws IOException {

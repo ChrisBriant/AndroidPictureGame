@@ -21,6 +21,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
+import chrisbriant.uk.picturegame.activities.GameActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.data.DatabaseHandler;
 import okhttp3.MediaType;
@@ -130,6 +131,7 @@ public class GameServerConnection {
                         String type = reader.getString("type");
                         Log.d("TYPE",type);
                         SharedPreferences.Editor editor = sharedPrefs.edit();
+                        Intent intent;
                         switch(type) {
                             case "register":
                                 editor.putString("id", reader.getString("yourid"));
@@ -137,7 +139,7 @@ public class GameServerConnection {
                             case "set_name":
                                 editor.putString("name",reader.getString("message"));
                                 editor.apply();
-                                Intent intent = new Intent(ctx, RoomListActivity.class);
+                                intent = new Intent(ctx, RoomListActivity.class);
                                 ctx.startActivity(intent);
                             case "room_list":
                                 Log.d("EVENT","ROOM LIST HAPPENED");
@@ -150,6 +152,16 @@ public class GameServerConnection {
                                 editor.apply();
                             case "room_failure":
                                 Toast.makeText(ctx,"Room already exists.",Toast.LENGTH_SHORT).show();
+                            case "game_start":
+                                Log.d("GAME START", "Game start received");
+                                editor.putString("startPlayer", reader.getString("startplayer"));
+                                editor.putString("gameId", reader.getString("game_id"));
+                                intent = new Intent(ctx, GameActivity.class);
+                                ctx.startActivity(intent);
+                                editor.apply();
+                            case "word":
+                                editor.putString("word", reader.getString("word"));
+                                editor.apply();
                         }
                     } catch (Exception e) {
 
