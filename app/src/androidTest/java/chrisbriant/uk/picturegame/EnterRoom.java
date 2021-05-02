@@ -2,6 +2,7 @@ package chrisbriant.uk.picturegame;
 
 import android.util.Log;
 
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -17,6 +18,7 @@ import java.util.Random;
 
 import chrisbriant.uk.picturegame.activities.MainActivity;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -55,9 +57,14 @@ public class EnterRoom {
                 .perform(typeText(generatedString));
         //Click add room
         onView(withId(R.id.rmAddRoomBtn)).perform(click());
+        //Click the top item of the recycler view
+        Thread.sleep(2000);
+        //onData(withId(R.id.rmRoomListRecyc)).atPosition(0).perform(click());
+//        onView(withId(R.id.rmRoomListRecyc))
+//                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
         //Leave open for 10 seconds after
-        Thread.sleep(10000);
+        Thread.sleep(60000);
     }
 
     @AfterClass

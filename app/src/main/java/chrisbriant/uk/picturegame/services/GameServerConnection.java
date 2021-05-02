@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -162,6 +163,15 @@ public class GameServerConnection {
                             case "word":
                                 editor.putString("word", reader.getString("word"));
                                 editor.apply();
+                            case "win_from_give_up":
+                                JSONArray wins = new JSONArray(sharedPrefs.getString("wins","[]"));
+                                JSONObject win = new JSONObject();
+                                win.put("winnerId",reader.getString("client_id"));
+                                win.put("winnerName", reader.getString("client_name"));
+                                win.put("roundNo",wins.length()+1);
+                                wins.put(win);
+                                Log.d("WIN FROM GIVE UP", wins.toString());
+                                editor.putString("wins",wins.toString());
                         }
                     } catch (Exception e) {
 

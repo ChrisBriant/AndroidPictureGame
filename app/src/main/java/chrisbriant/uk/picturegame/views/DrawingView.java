@@ -23,6 +23,7 @@ public class DrawingView extends View {
     private Paint mPaint;
     private Path mPath;
     private ArrayList<PicPoint> points = new ArrayList<PicPoint>();
+    private boolean locked;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -44,36 +45,39 @@ public class DrawingView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //points = new ArrayList<PicPoint>();
+        if(!locked) {
+            switch (event.getAction()) {
 
-        switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mPath.moveTo(event.getX(), event.getY());
+                    points.add(new PicPoint(Math.round(event.getX()), Math.round(event.getY()), "s"));
+                    Log.d("DOWN", String.valueOf(event.getX()) + "," + String.valueOf(event.getY()));
+                    break;
 
-            case MotionEvent.ACTION_DOWN:
-                mPath.moveTo(event.getX(), event.getY());
-                points.add(new PicPoint(Math.round(event.getX()),Math.round(event.getY()),"s"));
-                Log.d("DOWN", String.valueOf(event.getX()) + "," + String.valueOf(event.getY()));
-                break;
+                case MotionEvent.ACTION_MOVE:
+                    mPath.lineTo(event.getX(), event.getY());
+                    points.add(new PicPoint(Math.round(event.getX()), Math.round(event.getY()), ""));
+                    Log.d("MOVE", String.valueOf(event.getX()) + "," + String.valueOf(event.getY()));
+                    invalidate();
+                    break;
 
-            case MotionEvent.ACTION_MOVE:
-                mPath.lineTo(event.getX(), event.getY());
-                points.add(new PicPoint(Math.round(event.getX()),Math.round(event.getY()),""));
-                Log.d("MOVE", String.valueOf(event.getX()) + "," + String.valueOf(event.getY()));
-                invalidate();
-                break;
-
-            case MotionEvent.ACTION_UP:
-                points.add(new PicPoint(Math.round(event.getX()),Math.round(event.getY()),"e"));
-                PicturePayload payload = new PicturePayload("2f954fd7-5fe5-40e3-9a26-36be87d0a52f","5504efaf-2bce-4d35-a3a6-fc13105e9e18",points);
-                JSONObject picturePayload = payload.getJSONPayload();
-                Log.d("UP",picturePayload.toString());
-                break;
+                case MotionEvent.ACTION_UP:
+                    points.add(new PicPoint(Math.round(event.getX()), Math.round(event.getY()), "e"));
+                    PicturePayload payload = new PicturePayload("2f954fd7-5fe5-40e3-9a26-36be87d0a52f", "5504efaf-2bce-4d35-a3a6-fc13105e9e18", points);
+                    JSONObject picturePayload = payload.getJSONPayload();
+                    Log.d("UP", picturePayload.toString());
+                    break;
+            }
         }
 
         return true;
     }
 
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 
     public void drawPoints(String picData) {
-        //ArrayList<PicPoint> points = new ArrayList<PicPoint>();
         try {
             JSONArray picArray = new JSONArray(picData);
             for(int i=0;i<picArray.length();i++) {
@@ -84,19 +88,20 @@ public class DrawingView extends View {
                 );
                 //Draw to canvas
                 switch(point.getPos()) {
+                    //Multiplying by four to get the scale
                     case "s":
-                        mPath.moveTo(point.getX(), point.getY());
+                        mPath.moveTo(point.getX()*4, point.getY()*4);
                     case "e":
-                        mPath.lineTo(point.getX(), point.getY());
+                        mPath.lineTo(point.getX()*4, point.getY()*4);
                         mPath.close();
                     default:
-                        mPath.lineTo(point.getX(), point.getY());
+                        mPath.lineTo(point.getX()*4, point.getY()*4);
                 }
-                //Todo Need to figure out how to get a canvas handle and draw
-                //canvas.drawPath(mPath, mPaint);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //this.refreshDrawableState();
+        this.invalidate();
     }
 }

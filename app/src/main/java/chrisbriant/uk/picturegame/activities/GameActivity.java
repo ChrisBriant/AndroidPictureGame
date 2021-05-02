@@ -31,8 +31,10 @@ public class GameActivity extends AppCompatActivity {
 
         conn = GameServerConn.getInstance(this);
         SharedPreferences sharedPrefs = conn.getSharedPrefs();
+//        SharedPreferences.Editor editor = sharedPrefs.edit();
+//        editor.putString("wins","[]");
 
-        myId = sharedPrefs.getString("yourid","");
+        myId = sharedPrefs.getString("id","");
         word = sharedPrefs.getString("word","");
 
         TextView gmRoomNameTxt = findViewById(R.id.gmRoomNameTxt);
@@ -59,8 +61,26 @@ public class GameActivity extends AppCompatActivity {
         Button gmGuessBtn = findViewById(R.id.gmGuessBtn);
         Button gmGiveUpBtn = findViewById(R.id.gmGiveUpBtn);
 
+
+        gmGiveUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject payload = new JSONObject();
+                try {
+                    payload.put("type", "giveup");
+                    payload.put("client_id", sharedPrefs.getString("id",""));
+                    payload.put("game_id",sharedPrefs.getString("gameId",""));
+                    conn.send(payload.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Log.d("STARTING IDS", startPlayerId + " " + myId );
         if (startPlayerId.equals(myId)) {
             //Setup for starting player
+            gmCanvas.setLocked(false);
             gmStartPlayerText.setText("You are the start player, you go first!");
             gmWordTxt.setVisibility(View.VISIBLE);
             gmWordTxt.setText("The word is " + word);
@@ -69,6 +89,7 @@ public class GameActivity extends AppCompatActivity {
             gmGiveUpBtn.setVisibility(View.GONE);
         } else {
             //Setup for receiving player
+            gmCanvas.setLocked(true);
             gmStartPlayerText.setText(startPlayerName + " is the start player.");
             gmWordTxt.setVisibility(View.GONE);
             gmGuessTxt.setText("Guess what the user is drawing");

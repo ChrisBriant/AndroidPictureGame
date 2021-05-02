@@ -11,4 +11,5 @@
     <string name="placeholder">Loading</string>
     <string name="btn_start_game">Start Game</string>
     <string name="guess">Guess</string>
+    <string name="give_up">Give Up</string>
 </resources>

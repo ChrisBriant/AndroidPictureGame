@@ -154,12 +154,27 @@ public class GameServerConn {
                                 intent = new Intent(ctx, GameActivity.class);
                                 ctx.startActivity(intent);
                                 editor.apply();
+                            case "new_round":
+                                editor.putString("startPlayer", reader.getString("startplayer"));
+                                editor.putString("gameId", reader.getString("game_id"));
+                                intent = new Intent(ctx, GameActivity.class);
+                                ctx.startActivity(intent);
+                                editor.apply();
                             case "word":
                                 editor.putString("word", reader.getString("word"));
                                 editor.apply();
                             case "picture":
                                 editor.putString("picture", reader.getString("picture"));
                                 editor.apply();
+                            case "win_from_give_up":
+                                JSONArray wins = new JSONArray(sharedPrefs.getString("wins","[]"));
+                                JSONObject win = new JSONObject();
+                                win.put("winnerId",reader.getString("client_id"));
+                                win.put("winnerName", reader.getString("client_name"));
+                                win.put("roundNo",wins.length()+1);
+                                wins.put(win);
+                                Log.d("WIN FROM GIVE UP", wins.toString());
+                                editor.putString("wins",wins.toString());
                         }
                     } catch (Exception e) {
 
