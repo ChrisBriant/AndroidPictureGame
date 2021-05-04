@@ -25,6 +25,7 @@ import javax.net.ssl.X509TrustManager;
 
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.activities.GameActivity;
+import chrisbriant.uk.picturegame.activities.GameOverActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.data.DatabaseHandler;
 import chrisbriant.uk.picturegame.objects.PicPoint;
@@ -127,15 +128,20 @@ public class GameServerConn {
                         Log.d("TYPE",type);
                         SharedPreferences.Editor editor = sharedPrefs.edit();
                         Intent intent;
+                        //For logging wins
+                        JSONArray wins = new JSONArray(sharedPrefs.getString("wins","[]"));
+                        JSONObject win = new JSONObject();
                         switch(type) {
                             case "register":
                                 editor.putString("id", reader.getString("yourid"));
                                 editor.apply();
+                                break;
                             case "set_name":
                                 editor.putString("name",reader.getString("message"));
                                 editor.apply();
                                 intent = new Intent(ctx, RoomListActivity.class);
                                 ctx.startActivity(intent);
+                                break;
                             case "room_list":
                                 Log.d("EVENT","ROOM LIST HAPPENED");
                                 //Maybe try
@@ -145,8 +151,10 @@ public class GameServerConn {
                                 //db.createRoom(roomList);
                                 editor.putString("room_list",roomList);
                                 editor.apply();
+                                break;
                             case "room_failure":
                                 Toast.makeText(ctx,"Room already exists.",Toast.LENGTH_SHORT).show();
+                                break;
                             case "game_start":
                                 Log.d("GAME START", "Game start received");
                                 editor.putString("startPlayer", reader.getString("startplayer"));
@@ -154,27 +162,44 @@ public class GameServerConn {
                                 intent = new Intent(ctx, GameActivity.class);
                                 ctx.startActivity(intent);
                                 editor.apply();
+                                break;
                             case "new_round":
                                 editor.putString("startPlayer", reader.getString("startplayer"));
                                 editor.putString("gameId", reader.getString("game_id"));
                                 intent = new Intent(ctx, GameActivity.class);
                                 ctx.startActivity(intent);
                                 editor.apply();
+                                break;
                             case "word":
                                 editor.putString("word", reader.getString("word"));
                                 editor.apply();
+                                break;
                             case "picture":
                                 editor.putString("picture", reader.getString("picture"));
                                 editor.apply();
+                                break;
                             case "win_from_give_up":
-                                JSONArray wins = new JSONArray(sharedPrefs.getString("wins","[]"));
-                                JSONObject win = new JSONObject();
                                 win.put("winnerId",reader.getString("client_id"));
                                 win.put("winnerName", reader.getString("client_name"));
                                 win.put("roundNo",wins.length()+1);
+                                win.put("reason", "Player(s) gave up");
                                 wins.put(win);
                                 Log.d("WIN FROM GIVE UP", wins.toString());
                                 editor.putString("wins",wins.toString());
+                                editor.apply();
+                                break;
+                            case "game_over_from_give_up":
+                                win.put("winnerId",reader.getString("client_id"));
+                                win.put("winnerName", reader.getString("client_name"));
+                                win.put("roundNo",wins.length()+1);
+                                win.put("reason", "Player(s) gave up");
+                                wins.put(win);
+                                Log.d("GAME OVER FROM GIVE UP", wins.toString());
+                                editor.putString("wins",wins.toString());
+                                editor.apply();
+                                intent = new Intent(ctx, GameOverActivity.class);
+                                ctx.startActivity(intent);
+                                break;
                         }
                     } catch (Exception e) {
 

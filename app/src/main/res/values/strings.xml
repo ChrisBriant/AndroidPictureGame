@@ -12,4 +12,7 @@
     <string name="btn_start_game">Start Game</string>
     <string name="guess">Guess</string>
     <string name="give_up">Give Up</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="scores_title">Here are the scores:</string>
+    <string name="continue_text">Continue</string>
 </resources>

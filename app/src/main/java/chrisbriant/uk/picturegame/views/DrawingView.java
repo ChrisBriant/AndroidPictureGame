@@ -1,6 +1,7 @@
 package chrisbriant.uk.picturegame.views;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,12 +19,14 @@ import java.util.ArrayList;
 
 import chrisbriant.uk.picturegame.objects.PicPoint;
 import chrisbriant.uk.picturegame.objects.PicturePayload;
+import chrisbriant.uk.picturegame.services.GameServerConn;
 
 public class DrawingView extends View {
     private Paint mPaint;
     private Path mPath;
     private ArrayList<PicPoint> points = new ArrayList<PicPoint>();
     private boolean locked;
+    private GameServerConn conn;
 
     public DrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,9 +66,15 @@ public class DrawingView extends View {
 
                 case MotionEvent.ACTION_UP:
                     points.add(new PicPoint(Math.round(event.getX()), Math.round(event.getY()), "e"));
-                    PicturePayload payload = new PicturePayload("2f954fd7-5fe5-40e3-9a26-36be87d0a52f", "5504efaf-2bce-4d35-a3a6-fc13105e9e18", points);
+                    //Construct payload
+                    conn = GameServerConn.getInstance(this.getContext());
+                    Log.d("UP", "I am trying to connect");
+                    SharedPreferences sharedPrefs = conn.getSharedPrefs();
+                    PicturePayload payload = new PicturePayload(sharedPrefs.getString("id", ""), sharedPrefs.getString("gameId", ""), points);
                     JSONObject picturePayload = payload.getJSONPayload();
                     Log.d("UP", picturePayload.toString());
+                    //Send the payload
+                    conn.send(picturePayload.toString());
                     break;
             }
         }
