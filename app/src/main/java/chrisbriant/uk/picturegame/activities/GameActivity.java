@@ -1,6 +1,8 @@
 package chrisbriant.uk.picturegame.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +14,15 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import chrisbriant.uk.picturegame.R;
+import chrisbriant.uk.picturegame.adapters.GuessRecycler;
+import chrisbriant.uk.picturegame.adapters.RoomRecycler;
+import chrisbriant.uk.picturegame.objects.Guess;
+import chrisbriant.uk.picturegame.objects.GuessList;
+import chrisbriant.uk.picturegame.objects.RoomItem;
+import chrisbriant.uk.picturegame.objects.RoomList;
 import chrisbriant.uk.picturegame.services.GameServerConn;
 import chrisbriant.uk.picturegame.views.DrawingView;
 
@@ -23,6 +33,8 @@ public class GameActivity extends AppCompatActivity {
     private String startPlayerName;
     private String myId;
     private String word;
+    private RecyclerView recyclerView;
+    private GuessRecycler guessRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,21 @@ public class GameActivity extends AppCompatActivity {
         Button gmGuessBtn = findViewById(R.id.gmGuessBtn);
         Button gmGiveUpBtn = findViewById(R.id.gmGiveUpBtn);
 
+        gmGuessBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject payload = new JSONObject();
+                try {
+                    payload.put("type", "guess");
+                    payload.put("client_id", sharedPrefs.getString("id",""));
+                    payload.put("game_id",sharedPrefs.getString("gameId",""));
+                    payload.put("guess",gmGuessEdt.getText());
+                    conn.send(payload.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         gmGiveUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +104,29 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("STARTING IDS", startPlayerId + " " + myId );
+        //SET UP RECYCLER
+        recyclerView = findViewById(R.id.gmGuessRecyc);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        GuessList guessList = GuessList.getInstance();
+//        guessList.add(new Guess(
+//                "hello","Gill"
+//        ));
+        guessRecycler = new GuessRecycler(this,guessList);
+        recyclerView.setAdapter(guessRecycler);
+        guessRecycler.notifyDataSetChanged();
+
+        guessList.setGuessListener(new GuessList.GuessListListener() {
+            @Override
+            public void onItemChanged(ArrayList<Guess> guesses) {
+                Log.d("GUESS LISTENER", "An item was changed");
+                guessRecycler.notifyDataSetChanged();
+            }
+        });
+
+
+
         if (startPlayerId.equals(myId)) {
             //Setup for starting player
             gmCanvas.setLocked(false);

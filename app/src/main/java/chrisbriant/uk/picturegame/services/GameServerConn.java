@@ -28,6 +28,8 @@ import chrisbriant.uk.picturegame.activities.GameActivity;
 import chrisbriant.uk.picturegame.activities.GameOverActivity;
 import chrisbriant.uk.picturegame.activities.RoomListActivity;
 import chrisbriant.uk.picturegame.data.DatabaseHandler;
+import chrisbriant.uk.picturegame.objects.Guess;
+import chrisbriant.uk.picturegame.objects.GuessList;
 import chrisbriant.uk.picturegame.objects.PicPoint;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -48,6 +50,7 @@ public class GameServerConn {
     private WebSocket sock;
     private PictureEvents picEvents;
     private DatabaseHandler db;
+    private GuessList guessList;
 
     private GameServerConn(Context ctx) {
 
@@ -131,6 +134,8 @@ public class GameServerConn {
                         //For logging wins
                         JSONArray wins = new JSONArray(sharedPrefs.getString("wins","[]"));
                         JSONObject win = new JSONObject();
+
+                        guessList = GuessList.getInstance();
                         switch(type) {
                             case "register":
                                 editor.putString("id", reader.getString("yourid"));
@@ -199,6 +204,13 @@ public class GameServerConn {
                                 editor.apply();
                                 intent = new Intent(ctx, GameOverActivity.class);
                                 ctx.startActivity(intent);
+                                break;
+                            case "guess":
+                                String name = reader.getString("client_name");
+                                String guess = reader.getString("guess");
+                                boolean correct = reader.getBoolean("correct");
+                                Log.d("GUESS MADE", name);
+                                guessList.add(new Guess(name, guess));
                                 break;
                         }
                     } catch (Exception e) {
