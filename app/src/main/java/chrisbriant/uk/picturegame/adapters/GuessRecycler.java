@@ -1,6 +1,7 @@
 package chrisbriant.uk.picturegame.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,10 @@ import chrisbriant.uk.picturegame.objects.Guess;
 import chrisbriant.uk.picturegame.objects.GuessList;
 
 public class GuessRecycler extends RecyclerView.Adapter<GuessRecycler.ViewHolder> {
-    private GuessList guessList;
+    private ArrayList<Guess> guessList;
     private Context context;
 
-    public GuessRecycler(Context ctx, GuessList guessList) {
+    public GuessRecycler(Context ctx, ArrayList<Guess> guessList) {
         this.guessList = guessList;
         this.context = ctx;
     }
@@ -27,21 +28,27 @@ public class GuessRecycler extends RecyclerView.Adapter<GuessRecycler.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d("ON CREATE VIEW HOLDER", "Create view holder");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guess_item,parent,false);
         return new GuessRecycler.ViewHolder(view,context);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Guess guessItem = (Guess) guessList.get(position);
+        Guess guessItem = guessList.get(position);
 
         holder.gitmGuess.setText(guessItem.getGuess());
         holder.gitmName.setText(guessItem.getName());
+        Log.d("ROBOCOP", guessItem.getGuess());
     }
 
     @Override
     public int getItemCount() {
-        return guessList.size();
+        return this.guessList.size();
+    }
+
+    public void setGuessList(ArrayList<Guess> guessList) {
+        this.guessList = guessList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

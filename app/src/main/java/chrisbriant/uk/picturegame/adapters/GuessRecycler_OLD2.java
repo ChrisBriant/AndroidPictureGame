@@ -9,16 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.objects.Guess;
+import chrisbriant.uk.picturegame.objects.GuessList;
 
-public class GuessRecycler_OLD extends RecyclerView.Adapter<GuessRecycler_OLD.ViewHolder> {
-    private ArrayList<Guess> guessList;
+public class GuessRecycler_OLD2 extends RecyclerView.Adapter<GuessRecycler_OLD2.ViewHolder> {
+    private GuessList guessList;
     private Context context;
 
-    public GuessRecycler_OLD(Context ctx, ArrayList<Guess> guessList) {
+    public GuessRecycler_OLD2(Context ctx, GuessList guessList) {
         this.guessList = guessList;
         this.context = ctx;
     }
@@ -27,12 +26,12 @@ public class GuessRecycler_OLD extends RecyclerView.Adapter<GuessRecycler_OLD.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guess_item,parent,false);
-        return new GuessRecycler_OLD.ViewHolder(view,context);
+        return new GuessRecycler_OLD2.ViewHolder(view,context);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Guess guessItem = guessList.get(position);
+        Guess guessItem = (Guess) guessList.get(position);
 
         holder.gitmGuess.setText(guessItem.getGuess());
         holder.gitmName.setText(guessItem.getName());
@@ -40,7 +39,7 @@ public class GuessRecycler_OLD extends RecyclerView.Adapter<GuessRecycler_OLD.Vi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return guessList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

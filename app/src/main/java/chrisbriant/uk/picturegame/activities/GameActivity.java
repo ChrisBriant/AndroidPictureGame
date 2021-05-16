@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +19,8 @@ import java.util.ArrayList;
 
 import chrisbriant.uk.picturegame.R;
 import chrisbriant.uk.picturegame.adapters.GuessRecycler;
-import chrisbriant.uk.picturegame.adapters.RoomRecycler;
 import chrisbriant.uk.picturegame.objects.Guess;
 import chrisbriant.uk.picturegame.objects.GuessList;
-import chrisbriant.uk.picturegame.objects.RoomItem;
-import chrisbriant.uk.picturegame.objects.RoomList;
 import chrisbriant.uk.picturegame.services.GameServerConn;
 import chrisbriant.uk.picturegame.views.DrawingView;
 
@@ -109,7 +107,8 @@ public class GameActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        GuessList guessList = GuessList.getInstance();
+        //GuessList guessList = GuessList.getInstance();
+        ArrayList<Guess> guessList = new ArrayList<Guess>();
 //        guessList.add(new Guess(
 //                "hello","Gill"
 //        ));
@@ -117,13 +116,25 @@ public class GameActivity extends AppCompatActivity {
         recyclerView.setAdapter(guessRecycler);
         guessRecycler.notifyDataSetChanged();
 
-        guessList.setGuessListener(new GuessList.GuessListListener() {
-            @Override
-            public void onItemChanged(ArrayList<Guess> guesses) {
-                Log.d("GUESS LISTENER", "An item was changed");
-                guessRecycler.notifyDataSetChanged();
-            }
-        });
+        Context ctx = this;
+//
+//        guessList.setGuessListener(new GuessList.GuessListListener() {
+//            @Override
+//            public void onItemChanged() {
+//                Log.d("GUESS LISTENER", "An item was changed");
+//                //ArrayList<Guess> guessArrayList = guessList.getGuesses();
+//                GuessList changedGuessList = GuessList.getInstance();
+//                Log.d("GUESS ARRAY LIST", String.valueOf(changedGuessList.size()));
+//                //guessList.add(new Guess("Hello", "hello"));
+//                //guessRecycler = new GuessRecycler(ctx,guessList.getGuesses());
+//                guessRecycler.setGuessList(changedGuessList);
+//                recyclerView.setAdapter(guessRecycler);
+//                guessRecycler.notifyDataSetChanged();
+////                guessRecycler.setGuessList(guessList.getGuesses());
+////                guessRecycler.notifyDataSetChanged();
+//            }
+//        });
+
 
 
 
@@ -151,13 +162,36 @@ public class GameActivity extends AppCompatActivity {
                 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                     Log.d("Shared pref listener", "Shared prefs changed in game activity");
                     //JSONObject roomList;
-                    try {
-                        String pictureStr = sharedPrefs.getString("picture", "");
-                        Log.d("PICTURE GAMEACTIVITY",pictureStr);
-                        gmCanvas.drawPoints(pictureStr);
+                    if(!sharedPrefs.getString("picture", "").isEmpty()) {
+                        try {
+                            String pictureStr = sharedPrefs.getString("picture", "");
+                            Log.d("PICTURE GAMEACTIVITY", pictureStr);
+                            gmCanvas.drawPoints(pictureStr);
 
-                    } catch (Exception e) {
-                        Log.d("Error", e.getMessage());
+                        } catch (Exception e) {
+                            Log.d("Error", e.getMessage());
+                        }
+                    }
+
+                    Log.d("GUESS",sharedPrefs.getString("guess","") );
+
+
+                    if(!sharedPrefs.getString("guess","").isEmpty()) {
+                        Log.d("GUESS", "A guess is made");
+                        Log.d("GUESS",sharedPrefs.getString("guess","") );
+                        try{
+                            Guess receivedGuess = new Guess(sharedPrefs.getString("guess",""));
+                            guessList.add(receivedGuess);
+                            Log.d("GUESS SIZE",String.valueOf(guessList.size()));
+                            guessRecycler.setGuessList(guessList);
+                            Log.d("RECYC",String.valueOf(guessRecycler.getItemCount()));
+                            guessRecycler.notifyDataSetChanged();
+                        } catch (Exception e) {
+                            Log.d("EXCEPTION", e.getMessage());
+                        }
+
+                        //GuessList changedGuessList = GuessList.getInstance();
+                        //Log.d("GUESS", String.valueOf(changedGuessList.size()));
                     }
 
                 }

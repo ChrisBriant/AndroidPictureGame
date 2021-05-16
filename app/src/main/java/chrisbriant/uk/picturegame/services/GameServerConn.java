@@ -209,8 +209,20 @@ public class GameServerConn {
                                 String name = reader.getString("client_name");
                                 String guess = reader.getString("guess");
                                 boolean correct = reader.getBoolean("correct");
+                                Guess receivedGuess = new Guess(name,guess,correct);
+                                Log.d("GUESS MADE", receivedGuess.toJSON().toString());
+                                editor.putString("guess",receivedGuess.toJSON().toString());
+                                editor.apply();
                                 Log.d("GUESS MADE", name);
-                                guessList.add(new Guess(name, guess));
+                                Log.d("GUESS MADE 2", "Hello does it even get here?");
+//                                try {
+//                                    guessList.add(new Guess(name, guess));
+//                                } catch (Exception e) {
+//                                    Log.d("EXCEPTION", "An exception is thrown");
+//                                    Log.d("EXCEPTION", e.getMessage());
+//                                }
+//                                Log.d("GUESS ADD", "dollop");
+//                                //guessList.add(new Guess(name, guess));
                                 break;
                         }
                     } catch (Exception e) {
